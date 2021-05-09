@@ -11,49 +11,59 @@ class CounterModel extends ChangeNotifier {
 
   final StorageRepositoryBase _storageRepository;
 
-  int get count => counter?.counter;
-  CounterBase counter;
+  // 本来あまり望ましくないが、初期化処理の中で_counterを初期化するので
+  // _counterから安全呼び出しでcountの値を読み込んでいる
+  int get count => _counter?.counter;
   bool isChangedHourCounter = true;
-  CounterType counterType;
+  CounterBase _counter;
+  CounterType _counterType;
 
+  /// このmodelの初期化処理
+  /// shared_preferencesに保存されているCounterのタイプがあるかどうかを判断して
+  /// あればそのCounterを代入し、なければHourCounterを代入する
   Future<void> init() async {
     final bool isExistKey = await _storageRepository.isExistKey(key_counter);
     if (isExistKey) {
       final String loadKey =
           await _storageRepository.loadPersistenceStorage(key_counter);
-      counterType = Counter.from(loadKey);
+      _counterType = Counter.from(loadKey);
     } else {
-      counterType = CounterType.hourCounter;
+      _counterType = CounterType.hourCounter;
     }
-    switch (counterType) {
+    switch (_counterType) {
       case CounterType.hourCounter:
         isChangedHourCounter = true;
-        counter = HourCounter();
+        _counter = HourCounter();
         break;
       case CounterType.simpleCounter:
         isChangedHourCounter = false;
-        counter = SimpleCounter();
+        _counter = SimpleCounter();
         break;
       default:
         isChangedHourCounter = true;
-        counter = HourCounter();
+        _counter = HourCounter();
     }
     notifyListeners();
   }
 
+  /// Counterのincrementメソッドを呼ぶ
+  /// counterにはスーパークラスにincrementが定義されているので
+  /// SimpleCounterでもHourCounterでもincrementを呼び出すことが出来る
   void increment() {
-    counter.increment();
+    _counter.increment();
     notifyListeners();
   }
 
+  /// SwitchがtrueかfalseかでCounterを切り替えて
+  /// 同時にshared_preferencesに保存する
   Future<void> switchCounter() async {
     if (isChangedHourCounter) {
-      counter = SimpleCounter();
+      _counter = SimpleCounter();
       isChangedHourCounter = false;
       await _storageRepository.savePersistenceStorage(
           key_counter, CounterType.simpleCounter.value);
     } else {
-      counter = HourCounter();
+      _counter = HourCounter();
       isChangedHourCounter = true;
       await _storageRepository.savePersistenceStorage(
           key_counter, CounterType.hourCounter.value);

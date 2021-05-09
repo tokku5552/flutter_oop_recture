@@ -6,45 +6,41 @@ import 'package:provider/provider.dart';
 class CounterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<CounterModel>(
-      create: (_) => CounterModel()..init(),
-      child: Consumer<CounterModel>(
-        builder: (BuildContext context, CounterModel model, Widget child) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(appTitle),
-              leading: Switch(
-                value: model.isChangedHourCounter,
-                onChanged: (value) {
-                  model.switchCounter();
-                },
-              ),
-              // actions: [CounterSwitch()],
-            ),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'You have pushed the button this many times:',
-                  ),
-                  Text(
-                    '${model.count}',
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
-                ],
-              ),
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                model.increment();
+    return Consumer<CounterModel>(
+      builder: (BuildContext context, CounterModel model, Widget child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(appTitle),
+            leading: Switch(
+              value: model.isChangedHourCounter,
+              onChanged: (value) async {
+                await model.switchCounter();
               },
-              tooltip: 'Increment',
-              child: Icon(Icons.add),
             ),
-          );
-        },
-      ),
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'You have pushed the button this many times:',
+                ),
+                Text(
+                  '${model.count}',
+                  style: Theme.of(context).textTheme.headline4,
+                ),
+              ],
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              model.increment();
+            },
+            tooltip: 'Increment',
+            child: Icon(Icons.add),
+          ),
+        );
+      },
     );
   }
 }

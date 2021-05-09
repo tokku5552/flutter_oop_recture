@@ -11,7 +11,7 @@ It is based on Flutter's initial project, the count-up app.
 Not the correct UML notation.
 
 ## Libraries
- - provider: ^4.3.2+2
+ - provider: ^4.3.3
  - shared_preferences: ^0.5.12+4
  
 ## License

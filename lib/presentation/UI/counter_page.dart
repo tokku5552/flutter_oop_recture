@@ -13,6 +13,13 @@ class CounterPage extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: Text(appTitle),
+              leading: Switch(
+                value: model.isChangedHourCounter,
+                onChanged: (value) {
+                  model.switchCounter();
+                },
+              ),
+              // actions: [CounterSwitch()],
             ),
             body: Center(
               child: Column(

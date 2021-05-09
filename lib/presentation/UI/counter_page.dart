@@ -6,15 +6,15 @@ import 'package:provider/provider.dart';
 class CounterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(appTitle),
-      ),
-      body: ChangeNotifierProvider<CounterModel>(
-        create: (_) => CounterModel(),
-        child: Consumer<CounterModel>(
-          builder: (BuildContext context, CounterModel model, Widget child) {
-            return Center(
+    return ChangeNotifierProvider<CounterModel>(
+      create: (_) => CounterModel()..init(),
+      child: Consumer<CounterModel>(
+        builder: (BuildContext context, CounterModel model, Widget child) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(appTitle),
+            ),
+            body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -22,21 +22,21 @@ class CounterPage extends StatelessWidget {
                     'You have pushed the button this many times:',
                   ),
                   Text(
-                    '${model.counter}',
+                    '${model.count}',
                     style: Theme.of(context).textTheme.headline4,
                   ),
                 ],
               ),
-            );
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print('pushed!');
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                model.increment();
+              },
+              tooltip: 'Increment',
+              child: Icon(Icons.add),
+            ),
+          );
         },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
       ),
     );
   }

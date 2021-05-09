@@ -1,4 +1,4 @@
 abstract class CounterBase {
-  int counter;
+  int counter = 0;
   void increment();
 }
